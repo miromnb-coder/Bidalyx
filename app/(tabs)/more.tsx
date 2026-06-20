@@ -3,9 +3,11 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppHeader } from '../../src/components/AppHeader';
+import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { Screen } from '../../src/components/Screen';
 import { colors, spacing, typography } from '../../src/constants/theme';
+import { useAuth } from '../../src/state/AuthContext';
 
 const items: { title: string; subtitle: string; icon: keyof typeof Ionicons.glyphMap; route?: string }[] = [
   { title: 'Yrityksen tiedot', subtitle: 'Logo, Y-tunnus ja yhteystiedot', icon: 'business-outline', route: '/settings/company' },
@@ -15,9 +17,21 @@ const items: { title: string; subtitle: string; icon: keyof typeof Ionicons.glyp
 ];
 
 export default function MoreScreen() {
+  const { user, company, signOut } = useAuth();
+
+  async function logOut() {
+    await signOut();
+    router.replace('/auth/sign-in');
+  }
+
   return (
     <Screen>
       <AppHeader title="Lisää" subtitle="Asetukset ja hallinta" />
+      <Card style={styles.accountCard}>
+        <Text style={styles.title}>{company?.name ?? 'Bidalyx-työtila'}</Text>
+        <Text style={styles.subtitle}>{user?.email ?? 'Ei käyttäjää'}</Text>
+        <Text style={styles.connected}>Supabase yhdistetty</Text>
+      </Card>
       {items.map((item) => (
         <Pressable key={item.title} onPress={() => item.route && router.push(item.route)}>
           <Card style={styles.item}>
@@ -27,14 +41,17 @@ export default function MoreScreen() {
           </Card>
         </Pressable>
       ))}
+      <Button title="Kirjaudu ulos" variant="secondary" icon="log-out-outline" onPress={logOut} />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  accountCard: { gap: spacing.xs, backgroundColor: colors.black },
   item: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   iconWrap: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.blueSoft },
   textWrap: { flex: 1 },
   title: { fontSize: typography.body, fontWeight: '900', color: colors.text },
   subtitle: { marginTop: 2, fontSize: typography.small, color: colors.mutedText, fontWeight: '600' },
+  connected: { marginTop: spacing.xs, fontSize: typography.tiny, color: colors.green, fontWeight: '900' },
 });
