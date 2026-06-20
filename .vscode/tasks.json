@@ -1,0 +1,107 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Expo Go - Start tunnel",
+      "type": "shell",
+      "command": "npm run start:go",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "🧹 Expo Go - Start tunnel + clear cache",
+      "type": "shell",
+      "command": "npm run start:clear",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "🌐 Open web preview",
+      "type": "shell",
+      "command": "npm run web",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "🩺 Check Expo project",
+      "type": "shell",
+      "command": "npm run doctor",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "🔧 Fix Expo dependencies",
+      "type": "shell",
+      "command": "npm run fix:deps",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "✅ TypeScript check",
+      "type": "shell",
+      "command": "npm run typecheck",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "📦 Install packages",
+      "type": "shell",
+      "command": "npm install",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "♻️ Reinstall packages",
+      "type": "shell",
+      "command": "npm run reinstall",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "🛠️ Quick repair",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "📦 Install packages",
+        "🔧 Fix Expo dependencies",
+        "🩺 Check Expo project",
+        "✅ TypeScript check"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
