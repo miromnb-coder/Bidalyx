@@ -61,14 +61,8 @@ export default function QuoteDetailScreen() {
         </View>
         <View style={styles.divider} />
         <View style={styles.valueRow}>
-          <View>
-            <Text style={styles.labelLight}>Tarjouksen arvo</Text>
-            <Text style={styles.heroPrice}>{formatCurrency(quote.estimatedValue)}</Text>
-          </View>
-          <View style={styles.validBox}>
-            <Text style={styles.validLabel}>Voimassa</Text>
-            <Text style={styles.validValue}>{quote.validUntil}</Text>
-          </View>
+          <View><Text style={styles.labelLight}>Tarjouksen arvo</Text><Text style={styles.heroPrice}>{formatCurrency(quote.estimatedValue)}</Text></View>
+          <View style={styles.validBox}><Text style={styles.validLabel}>Voimassa</Text><Text style={styles.validValue}>{quote.validUntil}</Text></View>
         </View>
       </Card>
 
@@ -78,52 +72,18 @@ export default function QuoteDetailScreen() {
         <Card style={styles.quickCard}><Ionicons name="time-outline" size={21} color={colors.blue} /><Text style={styles.quickValue}>{formatDate(quote.updatedAt)}</Text><Text style={styles.quickLabel}>Päivitetty</Text></Card>
       </View>
 
-      <Card style={styles.customerCard}>
-        <View style={styles.avatar}><Text style={styles.avatarText}>{quote.customerName.slice(0, 2).toUpperCase()}</Text></View>
-        <View style={styles.flex}>
-          <Text style={styles.cardTitle}>Asiakas</Text>
-          <Text style={styles.bodyStrong}>{quote.customerName}</Text>
-          <Text style={styles.small}>{quote.customerPhone ?? 'Ei puhelinta'} · {quote.customerEmail ?? 'Ei sähköpostia'}</Text>
-        </View>
-      </Card>
-
+      <Card style={styles.customerCard}><View style={styles.avatar}><Text style={styles.avatarText}>{quote.customerName.slice(0, 2).toUpperCase()}</Text></View><View style={styles.flex}><Text style={styles.cardTitle}>Asiakas</Text><Text style={styles.bodyStrong}>{quote.customerName}</Text><Text style={styles.small}>{quote.customerPhone ?? 'Ei puhelinta'} · {quote.customerEmail ?? 'Ei sähköpostia'}</Text></View></Card>
       <Card><Text style={styles.cardTitle}>Työn kuvaus</Text><Text style={styles.body}>{quote.description}</Text></Card>
       <Card><Text style={styles.cardTitle}>Asiakkaan viesti</Text><Text style={styles.body}>{quote.customerMessage || 'Ei asiakkaan viestiä.'}</Text></Card>
 
-      <Card>
-        <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>Kuvat ja liitteet</Text>
-          <Pressable onPress={() => router.push({ pathname: '/quote/images', params: { id: quote.id } })}><Text style={styles.actionText}>Hallitse</Text></Pressable>
-        </View>
-        {attachments.length ? <View style={styles.imageRow}>{attachments.slice(0, 3).map((item) => <Image key={item.id} source={{ uri: item.fileUrl }} style={styles.previewImage} />)}</View> : <Text style={styles.body}>Ei kuvia vielä. Lisää kohdekuvia, jotta tarjous on helpompi tarkistaa.</Text>}
-      </Card>
-
-      <Card>
-        <Text style={styles.cardTitle}>Sisältää</Text>
-        {quote.includedItems.map((item) => <View key={item} style={styles.checkRow}><Ionicons name="checkmark-circle-outline" size={18} color={colors.blue} /><Text style={styles.body}>{item}</Text></View>)}
-      </Card>
-
-      <Card>
-        <Text style={styles.cardTitle}>Tapahtumahistoria</Text>
-        {quote.events.length ? quote.events.map((event) => <View key={event.id} style={styles.eventRow}><View style={styles.eventDot} /><View style={styles.flex}><Text style={styles.eventTitle}>{event.title}</Text><Text style={styles.small}>{event.description}</Text><Text style={styles.eventDate}>{formatDate(event.createdAt)}</Text></View></View>) : <Text style={styles.body}>Ei tapahtumia vielä.</Text>}
-      </Card>
-
-      <Card>
-        <Text style={styles.cardTitle}>Status-toiminnot</Text>
-        <View style={styles.statusGrid}>
-          {statusActions.map((action) => {
-            const active = quote.status === action.status;
-            return <Pressable key={action.status} onPress={() => updateQuoteStatus(quote.id, action.status)} style={[styles.statusButton, active && styles.statusButtonActive]}><Ionicons name={action.icon} size={16} color={active ? colors.card : colors.text} /><Text style={[styles.statusText, active && styles.statusTextActive]}>{action.label}</Text></Pressable>;
-          })}
-        </View>
-      </Card>
-
+      <Card><View style={styles.cardHeader}><Text style={styles.cardTitle}>Kuvat ja liitteet</Text><Pressable onPress={() => router.push({ pathname: '/quote/images', params: { id: quote.id } })}><Text style={styles.actionText}>Hallitse</Text></Pressable></View>{attachments.length ? <View style={styles.imageRow}>{attachments.slice(0, 3).map((item) => <Image key={item.id} source={{ uri: item.fileUrl }} style={styles.previewImage} />)}</View> : <Text style={styles.body}>Ei kuvia vielä. Lisää kohdekuvia, jotta tarjous on helpompi tarkistaa.</Text>}</Card>
+      <Card><Text style={styles.cardTitle}>Sisältää</Text>{quote.includedItems.map((item) => <View key={item} style={styles.checkRow}><Ionicons name="checkmark-circle-outline" size={18} color={colors.blue} /><Text style={styles.body}>{item}</Text></View>)}</Card>
+      <Card><Text style={styles.cardTitle}>Tapahtumahistoria</Text>{quote.events.length ? quote.events.map((event) => <View key={event.id} style={styles.eventRow}><View style={styles.eventDot} /><View style={styles.flex}><Text style={styles.eventTitle}>{event.title}</Text><Text style={styles.small}>{event.description}</Text><Text style={styles.eventDate}>{formatDate(event.createdAt)}</Text></View></View>) : <Text style={styles.body}>Ei tapahtumia vielä.</Text>}</Card>
+      <Card><Text style={styles.cardTitle}>Status-toiminnot</Text><View style={styles.statusGrid}>{statusActions.map((action) => { const active = quote.status === action.status; return <Pressable key={action.status} onPress={() => updateQuoteStatus(quote.id, action.status)} style={[styles.statusButton, active && styles.statusButtonActive]}><Ionicons name={action.icon} size={16} color={active ? colors.card : colors.text} /><Text style={[styles.statusText, active && styles.statusTextActive]}>{action.label}</Text></Pressable>; })}</View></Card>
       <Card style={styles.linkCard}><Ionicons name="link-outline" size={22} color={colors.blue} /><View style={styles.flex}><Text style={styles.cardTitle}>Asiakkaan linkki</Text><Text style={styles.linkText}>{publicLink}</Text></View></Card>
 
-      <View style={styles.buttonRow}>
-        <Button title="Muokkaa" variant="secondary" icon="create-outline" style={styles.flexButton} onPress={() => router.push({ pathname: '/quote/edit', params: { id: quote.id } })} />
-        <Button title="Lähetä" icon="paper-plane-outline" style={styles.flexButton} onPress={() => router.push({ pathname: '/quote/send', params: { id: quote.id } })} />
-      </View>
+      <View style={styles.buttonRow}><Button title="Muokkaa" variant="secondary" icon="create-outline" style={styles.flexButton} onPress={() => router.push({ pathname: '/quote/edit', params: { id: quote.id } })} /><Button title="Lähetä" icon="paper-plane-outline" style={styles.flexButton} onPress={() => router.push({ pathname: '/quote/send', params: { id: quote.id } })} /></View>
+      <Button title="Avaa dokumentti" variant="secondary" icon="document-text-outline" onPress={() => router.push({ pathname: '/quote-doc', params: { id: quote.id } })} />
       <Button title="Muistuta asiakasta" variant="secondary" icon="notifications-outline" onPress={() => remindCustomer(quote.id)} />
       <Button title="Jaa tarjouslinkki" variant="ghost" icon="share-outline" onPress={() => router.push({ pathname: '/quote/share', params: { id: quote.id } })} />
     </Screen>
