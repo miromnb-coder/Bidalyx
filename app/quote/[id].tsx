@@ -36,7 +36,7 @@ export default function QuoteDetailScreen() {
     return (
       <Screen>
         <Pressable onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={24} color={colors.text} /></Pressable>
-        <Text style={styles.title}>Tarjousta ei löytynyt</Text>
+        <Text style={styles.pageTitle}>Tarjousta ei löytynyt</Text>
       </Screen>
     );
   }
@@ -54,8 +54,8 @@ export default function QuoteDetailScreen() {
         <View style={styles.heroTop}>
           <View style={styles.heroText}>
             <Text style={styles.kicker}>{quote.serviceLabel}</Text>
-            <Text style={styles.title}>{quote.jobTitle}</Text>
-            <Text style={styles.subtitle}>{quote.customerName} · {quote.location}</Text>
+            <Text style={styles.heroTitle}>{quote.jobTitle}</Text>
+            <Text style={styles.heroSubtitle}>{quote.customerName} · {quote.location}</Text>
           </View>
           <View style={styles.heroIcon}><Ionicons name="document-text-outline" size={28} color={colors.card} /></View>
         </View>
@@ -87,50 +87,25 @@ export default function QuoteDetailScreen() {
         </View>
       </Card>
 
-      <Card>
-        <Text style={styles.cardTitle}>Työn kuvaus</Text>
-        <Text style={styles.body}>{quote.description}</Text>
-      </Card>
-
-      <Card>
-        <Text style={styles.cardTitle}>Asiakkaan viesti</Text>
-        <Text style={styles.body}>{quote.customerMessage || 'Ei asiakkaan viestiä.'}</Text>
-      </Card>
+      <Card><Text style={styles.cardTitle}>Työn kuvaus</Text><Text style={styles.body}>{quote.description}</Text></Card>
+      <Card><Text style={styles.cardTitle}>Asiakkaan viesti</Text><Text style={styles.body}>{quote.customerMessage || 'Ei asiakkaan viestiä.'}</Text></Card>
 
       <Card>
         <View style={styles.cardHeader}>
           <Text style={styles.cardTitle}>Kuvat ja liitteet</Text>
           <Pressable onPress={() => router.push({ pathname: '/quote/images', params: { id: quote.id } })}><Text style={styles.actionText}>Hallitse</Text></Pressable>
         </View>
-        {attachments.length ? (
-          <View style={styles.imageRow}>
-            {attachments.slice(0, 3).map((item) => <Image key={item.id} source={{ uri: item.fileUrl }} style={styles.previewImage} />)}
-          </View>
-        ) : <Text style={styles.body}>Ei kuvia vielä. Lisää kohdekuvia, jotta tarjous on helpompi tarkistaa.</Text>}
+        {attachments.length ? <View style={styles.imageRow}>{attachments.slice(0, 3).map((item) => <Image key={item.id} source={{ uri: item.fileUrl }} style={styles.previewImage} />)}</View> : <Text style={styles.body}>Ei kuvia vielä. Lisää kohdekuvia, jotta tarjous on helpompi tarkistaa.</Text>}
       </Card>
 
       <Card>
         <Text style={styles.cardTitle}>Sisältää</Text>
-        {quote.includedItems.map((item) => (
-          <View key={item} style={styles.checkRow}>
-            <Ionicons name="checkmark-circle-outline" size={18} color={colors.blue} />
-            <Text style={styles.body}>{item}</Text>
-          </View>
-        ))}
+        {quote.includedItems.map((item) => <View key={item} style={styles.checkRow}><Ionicons name="checkmark-circle-outline" size={18} color={colors.blue} /><Text style={styles.body}>{item}</Text></View>)}
       </Card>
 
       <Card>
         <Text style={styles.cardTitle}>Tapahtumahistoria</Text>
-        {quote.events.length ? quote.events.map((event) => (
-          <View key={event.id} style={styles.eventRow}>
-            <View style={styles.eventDot} />
-            <View style={styles.flex}>
-              <Text style={styles.eventTitle}>{event.title}</Text>
-              <Text style={styles.small}>{event.description}</Text>
-              <Text style={styles.eventDate}>{formatDate(event.createdAt)}</Text>
-            </View>
-          </View>
-        )) : <Text style={styles.body}>Ei tapahtumia vielä.</Text>}
+        {quote.events.length ? quote.events.map((event) => <View key={event.id} style={styles.eventRow}><View style={styles.eventDot} /><View style={styles.flex}><Text style={styles.eventTitle}>{event.title}</Text><Text style={styles.small}>{event.description}</Text><Text style={styles.eventDate}>{formatDate(event.createdAt)}</Text></View></View>) : <Text style={styles.body}>Ei tapahtumia vielä.</Text>}
       </Card>
 
       <Card>
@@ -138,23 +113,12 @@ export default function QuoteDetailScreen() {
         <View style={styles.statusGrid}>
           {statusActions.map((action) => {
             const active = quote.status === action.status;
-            return (
-              <Pressable key={action.status} onPress={() => updateQuoteStatus(quote.id, action.status)} style={[styles.statusButton, active && styles.statusButtonActive]}>
-                <Ionicons name={action.icon} size={16} color={active ? colors.card : colors.text} />
-                <Text style={[styles.statusText, active && styles.statusTextActive]}>{action.label}</Text>
-              </Pressable>
-            );
+            return <Pressable key={action.status} onPress={() => updateQuoteStatus(quote.id, action.status)} style={[styles.statusButton, active && styles.statusButtonActive]}><Ionicons name={action.icon} size={16} color={active ? colors.card : colors.text} /><Text style={[styles.statusText, active && styles.statusTextActive]}>{action.label}</Text></Pressable>;
           })}
         </View>
       </Card>
 
-      <Card style={styles.linkCard}>
-        <Ionicons name="link-outline" size={22} color={colors.blue} />
-        <View style={styles.flex}>
-          <Text style={styles.cardTitle}>Asiakkaan linkki</Text>
-          <Text style={styles.linkText}>{publicLink}</Text>
-        </View>
-      </Card>
+      <Card style={styles.linkCard}><Ionicons name="link-outline" size={22} color={colors.blue} /><View style={styles.flex}><Text style={styles.cardTitle}>Asiakkaan linkki</Text><Text style={styles.linkText}>{publicLink}</Text></View></Card>
 
       <View style={styles.buttonRow}>
         <Button title="Muokkaa" variant="secondary" icon="create-outline" style={styles.flexButton} onPress={() => router.push({ pathname: '/quote/edit', params: { id: quote.id } })} />
@@ -169,12 +133,13 @@ export default function QuoteDetailScreen() {
 const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   backButton: { width: 44, height: 44, justifyContent: 'center', marginLeft: -spacing.sm },
+  pageTitle: { marginTop: spacing.xs, fontSize: typography.h1, fontWeight: '900', color: colors.text, letterSpacing: -0.7 },
   heroCard: { backgroundColor: colors.black, gap: spacing.md, padding: spacing.lg },
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md },
   heroText: { flex: 1 },
   kicker: { fontSize: typography.tiny, color: colors.subtleText, fontWeight: '900', textTransform: 'uppercase' },
-  title: { marginTop: spacing.xs, fontSize: typography.h1, fontWeight: '900', color: colors.text, letterSpacing: -0.7 },
-  subtitle: { marginTop: spacing.xs, fontSize: typography.body, color: colors.mutedText, fontWeight: '700' },
+  heroTitle: { marginTop: spacing.xs, fontSize: typography.h1, fontWeight: '900', color: colors.card, letterSpacing: -0.7 },
+  heroSubtitle: { marginTop: spacing.xs, fontSize: typography.body, color: colors.subtleText, fontWeight: '700' },
   heroIcon: { width: 56, height: 56, borderRadius: radii.full, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.12)' },
   divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.12)' },
   valueRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', gap: spacing.md },
