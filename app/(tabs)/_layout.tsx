@@ -8,12 +8,16 @@ function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMa
   if (name === 'add') {
     return (
       <View style={[styles.plusButton, focused && styles.plusButtonActive]}>
-        <Ionicons name="add" size={30} color={colors.card} />
+        <Ionicons name="add" size={31} color={colors.card} />
       </View>
     );
   }
 
-  return <Ionicons name={name} size={22} color={color} />;
+  return (
+    <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+      <Ionicons name={name} size={21} color={color} />
+    </View>
+  );
 }
 
 export default function TabsLayout() {
@@ -22,7 +26,7 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.mutedText,
+        tabBarInactiveTintColor: colors.subtleText,
         tabBarLabelStyle: styles.label,
         tabBarStyle: styles.tabBar,
       }}
@@ -68,7 +72,7 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: Platform.select({ ios: 88, default: 72 }),
+    height: Platform.select({ ios: 88, default: 74 }),
     paddingTop: spacing.xs,
     paddingBottom: Platform.select({ ios: spacing.lg, default: spacing.sm }),
     borderTopWidth: 1,
@@ -77,23 +81,28 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '800',
+  },
+  iconWrap: {
+    width: 34,
+    height: 28,
+    borderRadius: radii.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapActive: {
+    backgroundColor: colors.background,
   },
   plusButton: {
-    width: 54,
-    height: 54,
-    marginTop: -spacing.md,
+    width: 58,
+    height: 58,
+    marginTop: -spacing.lg,
     borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.black,
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.18,
-    shadowRadius: 16,
-    elevation: 8,
   },
   plusButtonActive: {
-    transform: [{ scale: 1.04 }],
+    transform: [{ scale: 1.05 }],
   },
 });
