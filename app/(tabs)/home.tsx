@@ -10,9 +10,12 @@ import { Screen } from '../../src/components/Screen';
 import { SectionTitle } from '../../src/components/SectionTitle';
 import { StatCard } from '../../src/components/StatCard';
 import { colors, radii, spacing, typography } from '../../src/constants/theme';
-import { mockQuotes } from '../../src/data/mockQuotes';
+import { useQuotes } from '../../src/state/QuoteContext';
+import { formatCurrency } from '../../src/utils/formatCurrency';
 
 export default function HomeScreen() {
+  const { quotes, dashboard } = useQuotes();
+
   return (
     <Screen>
       <AppHeader title="Bidalyx" subtitle="Tarjoukset hallinnassa" rightIcon="notifications-outline" />
@@ -21,7 +24,7 @@ export default function HomeScreen() {
         <View style={styles.heroTopRow}>
           <View>
             <Text style={styles.heroLabel}>Avoimissa tarjouksissa</Text>
-            <Text style={styles.heroValue}>12 450 €</Text>
+            <Text style={styles.heroValue}>{formatCurrency(dashboard.openValue)}</Text>
           </View>
           <View style={styles.heroIcon}>
             <Ionicons name="trending-up-outline" size={28} color={colors.blue} />
@@ -31,7 +34,7 @@ export default function HomeScreen() {
         <View style={styles.heroBottomRow}>
           <View>
             <Text style={styles.microLabel}>Tänään</Text>
-            <Text style={styles.microValue}>4 uutta pyyntöä</Text>
+            <Text style={styles.microValue}>{dashboard.newCount} uutta pyyntöä</Text>
           </View>
           <View style={styles.liveBadge}>
             <View style={styles.liveDot} />
@@ -41,9 +44,9 @@ export default function HomeScreen() {
       </Card>
 
       <View style={styles.statsRow}>
-        <StatCard value="8 420 €" label="Hyväksytty tässä kuussa" icon="arrow-up-circle-outline" tone="green" />
-        <StatCard value="68 %" label="Voittoprosentti" icon="pie-chart-outline" tone="blue" />
-        <StatCard value="17" label="Hyväksytty" icon="checkmark-circle-outline" tone="green" />
+        <StatCard value={formatCurrency(dashboard.acceptedThisMonth)} label="Hyväksytty tässä kuussa" icon="arrow-up-circle-outline" tone="green" />
+        <StatCard value={`${dashboard.winRate} %`} label="Voittoprosentti" icon="pie-chart-outline" tone="blue" />
+        <StatCard value={String(dashboard.acceptedCount)} label="Hyväksytty" icon="checkmark-circle-outline" tone="green" />
       </View>
 
       <Button title="Luo tarjous" icon="add" onPress={() => router.push('/(tabs)/create')} />
@@ -59,7 +62,7 @@ export default function HomeScreen() {
       </View>
 
       <SectionTitle title="Viimeaikaiset tarjouspyynnöt" action="Näytä kaikki" />
-      {mockQuotes.slice(0, 3).map((quote) => (
+      {quotes.slice(0, 3).map((quote) => (
         <QuoteCard key={quote.id} quote={quote} onPress={() => router.push(`/quote/${quote.id}`)} />
       ))}
     </Screen>
