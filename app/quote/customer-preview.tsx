@@ -1,51 +1,71 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { Screen } from '../../src/components/Screen';
 import { colors, radii, spacing, typography } from '../../src/constants/theme';
+import { formatDraftPrice } from '../../src/utils/buildQuoteDraft';
 
-const includedItems = [
-  'Pohjatyöt ja suojaukset',
-  'Seinien ja kattojen maalaus',
-  'Tarvikkeet ja materiaalit',
-  'Loppusiivous',
-];
+function getParam(value: string | string[] | undefined, fallback: string) {
+  return Array.isArray(value) ? value[0] ?? fallback : value ?? fallback;
+}
 
 export default function CustomerPreviewScreen() {
+  const params = useLocalSearchParams();
+  const jobTitle = getParam(params.jobTitle, 'Kaksion maalaus, Tampere');
+  const customerName = getParam(params.customerName, 'Matti Virtanen');
+  const schedule = getParam(params.schedule, '2–3 päivää');
+  const description = getParam(params.description, 'Sisätilojen maalaus asiakkaan toiveiden mukaan.');
+  const price = Number(getParam(params.price, '1250')) || 1250;
+  const includedItems = getParam(params.includedItems, 'Pohjatyöt ja suojaukset|Seinien ja kattojen maalaus|Tarvikkeet ja materiaalit|Loppusiivous').split('|');
+
   return (
     <Screen>
       <Pressable onPress={() => router.back()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color={colors.text} />
       </Pressable>
 
-      <View>
-        <Text style={styles.title}>Tarjous asiakkaalle</Text>
-        <Text style={styles.subtitle}>Tarjous #Q-2024-0156</Text>
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={styles.title}>Tarjous asiakkaalle</Text>
+          <Text style={styles.subtitle}>Tarjous #BID-2024-0156</Text>
+        </View>
+        <View style={styles.secureBadge}>
+          <Ionicons name="lock-closed-outline" size={14} color={colors.green} />
+          <Text style={styles.secureText}>Turvallinen</Text>
+        </View>
       </View>
 
       <Card style={styles.companyCard}>
         <View style={styles.logoMark}>
-          <Ionicons name="home-outline" size={34} color={colors.text} />
+          <Ionicons name="sparkles-outline" size={34} color={colors.text} />
         </View>
-        <Text style={styles.companyName}>MaalausPartio Oy</Text>
-        <Text style={styles.companySubtitle}>Luotettavaa laatua</Text>
+        <Text style={styles.companyName}>Bidalyx Demo Oy</Text>
+        <Text style={styles.companySubtitle}>Nopeat ja selkeät tarjoukset</Text>
       </Card>
 
-      <View>
-        <Text style={styles.jobTitle}>Kaksion maalaus, Tampere</Text>
+      <Card style={styles.offerCard}>
         <Text style={styles.validText}>Tarjous voimassa 14 päivää</Text>
-      </View>
-
-      <Text style={styles.price}>1 250 €</Text>
-      <Text style={styles.taxText}>sis. alv 24%</Text>
+        <Text style={styles.jobTitle}>{jobTitle}</Text>
+        <Text style={styles.customerText}>Asiakas: {customerName}</Text>
+        <Text style={styles.description}>{description}</Text>
+        <View style={styles.priceRow}>
+          <View>
+            <Text style={styles.price}>{formatDraftPrice(price)}</Text>
+            <Text style={styles.taxText}>sis. alv 24%</Text>
+          </View>
+          <View style={styles.priceBadge}>
+            <Ionicons name="pricetag-outline" size={22} color={colors.blue} />
+          </View>
+        </View>
+      </Card>
 
       <Card style={styles.infoCard}>
         <View>
           <Text style={styles.smallLabel}>Arvioitu kesto</Text>
-          <Text style={styles.infoValue}>2–3 päivää</Text>
+          <Text style={styles.infoValue}>{schedule}</Text>
         </View>
         <Ionicons name="calendar-outline" size={24} color={colors.blue} />
       </Card>
@@ -64,12 +84,14 @@ export default function CustomerPreviewScreen() {
         <Ionicons name="shield-checkmark-outline" size={28} color={colors.blue} />
         <View style={styles.guaranteeText}>
           <Text style={styles.cardTitle}>Tyytyväisyystakuu</Text>
-          <Text style={styles.body}>Teemme työn huolellisesti ja laadukkaasti.</Text>
+          <Text style={styles.body}>Teemme työn huolellisesti ja varmistamme lopputuloksen ennen laskutusta.</Text>
         </View>
       </Card>
 
-      <Button title="Hyväksy tarjous" icon="checkmark-circle-outline" />
-      <Button title="Kysy lisätietoja" variant="secondary" icon="chatbubble-ellipses-outline" />
+      <View style={styles.actionArea}>
+        <Button title="Hyväksy tarjous" icon="checkmark-circle-outline" />
+        <Button title="Kysy lisätietoja" variant="secondary" icon="chatbubble-ellipses-outline" />
+      </View>
     </Screen>
   );
 }
@@ -80,6 +102,12 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     marginLeft: -spacing.sm,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.md,
   },
   title: {
     fontSize: typography.h1,
@@ -92,14 +120,28 @@ const styles = StyleSheet.create({
     color: colors.mutedText,
     fontWeight: '700',
   },
+  secureBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 7,
+    borderRadius: radii.full,
+    backgroundColor: colors.greenSoft,
+  },
+  secureText: {
+    fontSize: typography.tiny,
+    fontWeight: '900',
+    color: colors.green,
+  },
   companyCard: {
     alignItems: 'center',
     gap: spacing.xs,
     paddingVertical: spacing.xl,
   },
   logoMark: {
-    width: 64,
-    height: 64,
+    width: 66,
+    height: 66,
     borderRadius: radii.lg,
     borderWidth: 2,
     borderColor: colors.text,
@@ -117,28 +159,55 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.mutedText,
   },
-  jobTitle: {
-    fontSize: typography.h3,
-    fontWeight: '900',
-    color: colors.text,
+  offerCard: {
+    gap: spacing.sm,
   },
   validText: {
-    marginTop: 2,
+    fontSize: typography.tiny,
+    fontWeight: '900',
+    color: colors.blue,
+  },
+  jobTitle: {
+    fontSize: typography.h2,
+    fontWeight: '900',
+    color: colors.text,
+    letterSpacing: -0.4,
+  },
+  customerText: {
     fontSize: typography.small,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.mutedText,
   },
+  description: {
+    fontSize: typography.small,
+    lineHeight: 20,
+    fontWeight: '600',
+    color: colors.mutedText,
+  },
+  priceRow: {
+    marginTop: spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   price: {
-    fontSize: 38,
+    fontSize: 40,
     fontWeight: '900',
     color: colors.text,
     letterSpacing: -1,
   },
   taxText: {
-    marginTop: -spacing.md,
     fontSize: typography.small,
     fontWeight: '700',
     color: colors.mutedText,
+  },
+  priceBadge: {
+    width: 52,
+    height: 52,
+    borderRadius: radii.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.blueSoft,
   },
   infoCard: {
     flexDirection: 'row',
@@ -182,5 +251,8 @@ const styles = StyleSheet.create({
   guaranteeText: {
     flex: 1,
     gap: 2,
+  },
+  actionArea: {
+    gap: spacing.sm,
   },
 });
