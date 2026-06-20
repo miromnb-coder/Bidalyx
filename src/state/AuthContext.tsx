@@ -179,26 +179,21 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
 
       const { data: newCompany, error: companyError } = await supabase
-        .from('companies')
-        .insert({
-          name: input.name,
-          business_id: input.businessId ?? null,
-          email: input.email ?? user.email ?? null,
-          phone: input.phone ?? null,
-          website: input.website ?? null,
-          location: input.location ?? null,
-          tagline: input.tagline ?? 'Nopeat ja selkeät tarjoukset',
-          created_by: user.id,
-        })
-        .select('*')
-        .single();
+        .rpc('create_company_for_current_user', {
+          p_name: input.name,
+          p_business_id: input.businessId ?? null,
+          p_email: input.email ?? user.email ?? null,
+          p_phone: input.phone ?? null,
+          p_website: input.website ?? null,
+          p_location: input.location ?? null,
+          p_tagline: input.tagline ?? 'Nopeat ja selkeät tarjoukset',
+        });
 
       if (companyError || !newCompany) {
         setErrorMessage(companyError?.message ?? 'Yritystä ei voitu luoda.');
         return false;
       }
 
-      await supabase.from('pricing_settings').insert({ company_id: newCompany.id });
       setCompany(newCompany as CompanyRow);
       await loadWorkspace(session);
       return true;
