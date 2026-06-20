@@ -2,13 +2,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { mockQuotes } from '../data/mockQuotes';
-import { createDefaultTemplates, createRemoteQuote, fetchRemoteWorkspace, getServiceTypeFromLabel, remoteCompanyToProfile, remotePricingToSettings, saveRemoteCompany, saveRemotePricing, updateRemoteQuote, updateRemoteQuoteStatus } from '../services/remoteData';
+import { RemoteAttachment, createDefaultTemplates, createRemoteQuote, fetchRemoteWorkspace, getServiceTypeFromLabel, remoteCompanyToProfile, remotePricingToSettings, saveRemoteCompany, saveRemotePricing, updateRemoteQuote, updateRemoteQuoteStatus } from '../services/remoteData';
 import { CompanyProfile, PricingSettings } from '../types/company';
 import { Customer } from '../types/customer';
 import { Quote, QuoteEvent, QuoteStatus } from '../types/quote';
 import { useAuth } from './AuthContext';
 
-const STORAGE_KEY = 'bidalyx-state-v2';
+const STORAGE_KEY = 'bidalyx-state-v3';
 
 export type NewQuoteInput = {
   customerName: string;
@@ -53,6 +53,7 @@ type StoredState = {
   onboardingComplete: boolean;
   quoteTemplates: QuoteTemplate[];
   messageTemplates: MessageTemplate[];
+  attachments: RemoteAttachment[];
 };
 
 type QuoteContextValue = StoredState & {
@@ -78,6 +79,7 @@ type QuoteContextValue = StoredState & {
   markQuoteSent: (quoteId: string) => Promise<void>;
   remindCustomer: (quoteId: string) => Promise<void>;
   addLocalImageToQuote: (quoteId: string) => Promise<void>;
+  getAttachmentsByQuoteId: (quoteId?: string) => RemoteAttachment[];
   getQuoteById: (quoteId?: string) => Quote | undefined;
   getCustomerById: (customerId?: string) => Customer | undefined;
   getQuotesByCustomerId: (customerId?: string) => Quote[];
@@ -86,6 +88,7 @@ type QuoteContextValue = StoredState & {
   completeOnboarding: () => void;
   resetDemoData: () => void;
   buildShareLink: (quote: Quote) => string;
+  buildPublicShareLink: (quote: Quote) => string;
 };
 
 const initialCompany: CompanyProfile = {
@@ -114,6 +117,7 @@ const initialState: StoredState = {
   onboardingComplete: false,
   quoteTemplates: [],
   messageTemplates: [],
+  attachments: [],
 };
 
 const QuoteContext = createContext<QuoteContextValue | null>(null);
@@ -189,7 +193,7 @@ export function QuoteProvider({ children }: PropsWithChildren) {
       setState((current) => ({
         ...current,
         quotes: workspace.quotes,
-        customers: workspace.customers,
+        attachments: workspace.attachments,
         quoteTemplates: workspace.quoteTemplates,
         messageTemplates: workspace.messageTemplates,
         company: remoteCompanyToProfile(auth.company),
@@ -281,6 +285,7 @@ export function QuoteProvider({ children }: PropsWithChildren) {
     async addLocalImageToQuote(quoteId) {
       setState((current) => ({ ...current, quotes: current.quotes.map((quote) => quote.id === quoteId ? { ...quote, imageCount: quote.imageCount + 1 } : quote) }));
     },
+    getAttachmentsByQuoteId(quoteId) { return state.attachments.filter((attachment) => attachment.quoteId === quoteId); },
     getQuoteById(quoteId) { return state.quotes.find((quote) => quote.id === quoteId); },
     getCustomerById(customerId) { return customers.find((customer) => customer.id === customerId); },
     getQuotesByCustomerId(customerId) { return state.quotes.filter((quote) => quote.customerId === customerId); },
@@ -299,6 +304,7 @@ export function QuoteProvider({ children }: PropsWithChildren) {
     completeOnboarding() { setState((current) => ({ ...current, onboardingComplete: true })); },
     resetDemoData() { setState(initialState); },
     buildShareLink(quote) { return `https://bidalyx.app/q/${quote.shareToken}`; },
+    buildPublicShareLink(quote) { return `https://enxrfphtehaegppmqasw.functions.supabase.co/public-quote?token=${quote.shareToken}`; },
   };
 
   return <QuoteContext.Provider value={value}>{children}</QuoteContext.Provider>;
