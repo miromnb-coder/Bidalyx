@@ -1,5 +1,9 @@
-import { Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { Text } from 'react-native';
+
+import { Button } from '../src/components/Button';
+import { Screen } from '../src/components/Screen';
 
 export default function DocView() {
-  return <View><Text>Document view</Text><Text>Preview</Text></View>;
+  return <Screen><Text>Document preview</Text><Button title="Back" onPress={() => router.back()} /></Screen>;
 }
