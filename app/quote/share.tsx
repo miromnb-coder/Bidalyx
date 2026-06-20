@@ -8,32 +8,34 @@ import { Screen } from '../../src/components/Screen';
 import { colors, spacing, typography } from '../../src/constants/theme';
 import { useQuotes } from '../../src/state/QuoteContext';
 
+function makePublicLink(token: string) {
+  return `https://enxrfphtehaegppmqasw.functions.supabase.co/public-quote?token=${token}`;
+}
+
 export default function ShareQuoteScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getQuoteById, buildShareLink, markQuoteSent } = useQuotes();
+  const { getQuoteById, markQuoteSent } = useQuotes();
   const quote = getQuoteById(id);
 
-  if (!quote) {
-    return <Screen><Text style={styles.title}>Tarjousta ei löytynyt</Text></Screen>;
-  }
+  if (!quote) return <Screen><Text style={styles.title}>Tarjousta ei löytynyt</Text></Screen>;
 
-  const link = buildShareLink(quote);
+  const link = makePublicLink(quote.shareToken);
 
   async function shareLink() {
-    markQuoteSent(quote.id);
+    await markQuoteSent(quote.id);
     await Share.share({ message: `Hei! Tässä tarjouksesi: ${link}` });
   }
 
   return (
     <Screen>
       <Text style={styles.title}>Jaa tarjouslinkki</Text>
-      <Text style={styles.subtitle}>Ensimmäisessä MVP-versiossa linkki on demo-linkki. Backendin jälkeen siitä tulee oikea verkkolinkki.</Text>
+      <Text style={styles.subtitle}>Tämä linkki avaa asiakkaalle oikean Supabase Edge Function -verkkonäkymän.</Text>
       <Card style={styles.linkCard}>
         <View style={styles.icon}><Ionicons name="link-outline" size={26} color={colors.blue} /></View>
         <Text style={styles.link}>{link}</Text>
       </Card>
       <Button title="Jaa linkki" icon="share-outline" onPress={shareLink} />
-      <Button title="Avaa asiakkaan näkymä" variant="secondary" icon="eye-outline" onPress={() => router.push({ pathname: '/quote/customer-preview', params: { id: quote.id } })} />
+      <Button title="Avaa sovelluksen esikatselu" variant="secondary" icon="eye-outline" onPress={() => router.push({ pathname: '/quote/customer-preview', params: { id: quote.id } })} />
       <Button title="Palaa tarjoukseen" variant="ghost" icon="arrow-back-outline" onPress={() => router.back()} />
     </Screen>
   );
