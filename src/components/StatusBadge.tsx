@@ -11,6 +11,7 @@ const statusMap: Record<QuoteStatus, { label: string; text: string; background: 
   opened: { label: 'AVATTU', text: colors.blue, background: colors.blueSoft },
   accepted: { label: 'HYVÄKSYTTY', text: colors.green, background: colors.greenSoft },
   rejected: { label: 'HYLÄTTY', text: colors.red, background: colors.redSoft },
+  expired: { label: 'VANHENTUNUT', text: colors.mutedText, background: colors.background },
 };
 
 type StatusBadgeProps = {
