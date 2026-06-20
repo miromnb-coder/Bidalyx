@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '../../src/components/Button';
@@ -16,96 +16,35 @@ function getParam(value: string | string[] | undefined) {
 
 export default function DraftScreen() {
   const params = useLocalSearchParams();
-  const { addQuote, pricing } = useQuotes();
+  const { addQuote, pricing, syncError } = useQuotes();
+  const [saving, setSaving] = useState(false);
 
-  const draft = useMemo(
-    () =>
-      buildQuoteDraft({
-        customerName: getParam(params.customerName),
-        phone: getParam(params.phone),
-        email: getParam(params.email),
-        location: getParam(params.location),
-        serviceType: getParam(params.serviceType),
-        message: getParam(params.message),
-        area: getParam(params.area),
-        pricing,
-      }),
-    [params, pricing],
-  );
+  const draft = useMemo(() => buildQuoteDraft({ customerName: getParam(params.customerName), phone: getParam(params.phone), email: getParam(params.email), location: getParam(params.location), serviceType: getParam(params.serviceType), message: getParam(params.message), area: getParam(params.area), pricing }), [params, pricing]);
 
-  function saveQuote(status: 'draft' | 'sent') {
-    const quote = addQuote({
-      customerName: draft.customerName,
-      customerPhone: getParam(params.phone),
-      customerEmail: getParam(params.email),
-      jobTitle: draft.jobTitle,
-      location: draft.location,
-      serviceLabel: draft.serviceType,
-      status,
-      estimatedValue: draft.price,
-      description: draft.description,
-      customerMessage: draft.customerMessage,
-      schedule: draft.schedule,
-      terms: draft.terms,
-      includedItems: draft.includedItems,
-      area: draft.area,
-      imageCount: 0,
-    });
-
-    if (status === 'sent') {
-      router.replace({ pathname: '/quote/customer-preview', params: { id: quote.id } });
-    } else {
-      router.replace(`/quote/${quote.id}`);
+  async function saveQuote(status: 'draft' | 'sent') {
+    setSaving(true);
+    try {
+      const quote = await addQuote({ customerName: draft.customerName, customerPhone: getParam(params.phone), customerEmail: getParam(params.email), jobTitle: draft.jobTitle, location: draft.location, serviceLabel: draft.serviceType, status, estimatedValue: draft.price, description: draft.description, customerMessage: draft.customerMessage, schedule: draft.schedule, terms: draft.terms, includedItems: draft.includedItems, area: draft.area, imageCount: 0 });
+      if (status === 'sent') router.replace({ pathname: '/quote/customer-preview', params: { id: quote.id } });
+      else router.replace(`/quote/${quote.id}`);
+    } finally {
+      setSaving(false);
     }
   }
 
   return (
     <Screen>
-      <View style={styles.topRow}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={colors.text} />
-        </Pressable>
-        <View style={styles.aiBadge}>
-          <Ionicons name="sparkles-outline" size={14} color={colors.blue} />
-          <Text style={styles.aiText}>AI-luonnos</Text>
-        </View>
-      </View>
-
+      <View style={styles.topRow}><Pressable onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={24} color={colors.text} /></Pressable><View style={styles.aiBadge}><Ionicons name="sparkles-outline" size={14} color={colors.blue} /><Text style={styles.aiText}>AI-luonnos</Text></View></View>
       <Text style={styles.title}>Tarjousluonnos valmis</Text>
       <Text style={styles.subtitle}>Tarkista luonnos, tallenna tai lähetä asiakkaalle.</Text>
-
-      <Card style={styles.summaryCard}>
-        <View>
-          <Text style={styles.summaryLabel}>Asiakas</Text>
-          <Text style={styles.summaryTitle}>{draft.customerName}</Text>
-          <Text style={styles.summarySub}>{draft.jobTitle}</Text>
-        </View>
-        <View style={styles.serviceBadge}><Text style={styles.serviceText}>{draft.serviceType}</Text></View>
-      </Card>
-
+      {syncError ? <Card style={styles.errorCard}><Text style={styles.errorText}>{syncError}</Text></Card> : null}
+      <Card style={styles.summaryCard}><View><Text style={styles.summaryLabel}>Asiakas</Text><Text style={styles.summaryTitle}>{draft.customerName}</Text><Text style={styles.summarySub}>{draft.jobTitle}</Text></View><View style={styles.serviceBadge}><Text style={styles.serviceText}>{draft.serviceType}</Text></View></Card>
       <Card><Text style={styles.cardTitle}>Työn kuvaus</Text><Text style={styles.body}>{draft.description}</Text></Card>
-
-      <Card style={styles.infoCard}>
-        <View><Text style={styles.cardTitle}>Hinta-arvio</Text><Text style={styles.price}>{formatDraftPrice(draft.price)}</Text><Text style={styles.smallText}>Arviohinta sis. alv 24%</Text></View>
-        <View style={styles.roundIcon}><Ionicons name="pricetag-outline" size={22} color={colors.blue} /></View>
-      </Card>
-
-      <Card style={styles.infoCard}>
-        <View><Text style={styles.cardTitle}>Aikataulu</Text><Text style={styles.body}>Arvioitu kesto: {draft.schedule}</Text><Text style={styles.smallText}>Aloitus sopimuksen mukaan</Text></View>
-        <View style={styles.roundIcon}><Ionicons name="calendar-outline" size={22} color={colors.blue} /></View>
-      </Card>
-
-      <Card>
-        <Text style={styles.cardTitle}>Sisältää</Text>
-        {draft.includedItems.map((item) => <View key={item} style={styles.checkRow}><Ionicons name="checkmark-circle-outline" size={18} color={colors.blue} /><Text style={styles.body}>{item}</Text></View>)}
-      </Card>
-
+      <Card style={styles.infoCard}><View><Text style={styles.cardTitle}>Hinta-arvio</Text><Text style={styles.price}>{formatDraftPrice(draft.price)}</Text><Text style={styles.smallText}>Arviohinta sis. alv 24%</Text></View><View style={styles.roundIcon}><Ionicons name="pricetag-outline" size={22} color={colors.blue} /></View></Card>
+      <Card style={styles.infoCard}><View><Text style={styles.cardTitle}>Aikataulu</Text><Text style={styles.body}>Arvioitu kesto: {draft.schedule}</Text><Text style={styles.smallText}>Aloitus sopimuksen mukaan</Text></View><View style={styles.roundIcon}><Ionicons name="calendar-outline" size={22} color={colors.blue} /></View></Card>
+      <Card><Text style={styles.cardTitle}>Sisältää</Text>{draft.includedItems.map((item) => <View key={item} style={styles.checkRow}><Ionicons name="checkmark-circle-outline" size={18} color={colors.blue} /><Text style={styles.body}>{item}</Text></View>)}</Card>
       <Card style={styles.noteCard}><Ionicons name="information-circle-outline" size={22} color={colors.blue} /><Text style={styles.noteText}>{draft.terms}</Text></Card>
-
-      <View style={styles.buttonRow}>
-        <Button title="Tallenna" variant="secondary" style={styles.flexButton} onPress={() => saveQuote('draft')} />
-        <Button title="Lähetä" icon="paper-plane-outline" style={styles.flexButton} onPress={() => saveQuote('sent')} />
-      </View>
+      <View style={styles.buttonRow}><Button title={saving ? 'Tallennetaan...' : 'Tallenna'} variant="secondary" style={styles.flexButton} onPress={() => saveQuote('draft')} disabled={saving} /><Button title={saving ? 'Lähetetään...' : 'Lähetä'} icon="paper-plane-outline" style={styles.flexButton} onPress={() => saveQuote('sent')} disabled={saving} /></View>
       <Button title="Palaa muokkaamaan" variant="ghost" icon="arrow-back-outline" onPress={() => router.back()} />
     </Screen>
   );
@@ -118,6 +57,8 @@ const styles = StyleSheet.create({
   aiText: { fontSize: typography.tiny, fontWeight: '900', color: colors.blue },
   title: { fontSize: typography.h1, fontWeight: '900', color: colors.text },
   subtitle: { marginTop: -spacing.sm, fontSize: typography.small, color: colors.mutedText, fontWeight: '600' },
+  errorCard: { backgroundColor: colors.redSoft },
+  errorText: { color: colors.red, fontWeight: '800' },
   summaryCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', backgroundColor: colors.black },
   summaryLabel: { fontSize: typography.tiny, color: colors.subtleText, fontWeight: '800' },
   summaryTitle: { marginTop: spacing.xs, fontSize: typography.h2, color: colors.card, fontWeight: '900' },
