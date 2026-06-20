@@ -21,13 +21,18 @@ export default function RootLayout() {
             <Stack.Screen name="quote/[id]" />
             <Stack.Screen name="quote/draft" />
             <Stack.Screen name="quote/edit" />
+            <Stack.Screen name="quote/images" />
             <Stack.Screen name="quote/customer-preview" />
             <Stack.Screen name="quote/accept" />
             <Stack.Screen name="quote/accepted" />
             <Stack.Screen name="quote/share" />
+            <Stack.Screen name="quote/send" />
             <Stack.Screen name="customer/[id]" />
             <Stack.Screen name="settings/company" />
             <Stack.Screen name="settings/pricing" />
+            <Stack.Screen name="templates/quotes" />
+            <Stack.Screen name="templates/messages" />
+            <Stack.Screen name="analytics" />
           </Stack>
         </QuoteProvider>
       </AuthProvider>
