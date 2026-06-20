@@ -11,21 +11,24 @@ type ButtonProps = {
   variant?: ButtonVariant;
   icon?: keyof typeof Ionicons.glyphMap;
   style?: ViewStyle;
+  disabled?: boolean;
 };
 
-export function Button({ title, onPress, variant = 'primary', icon, style }: ButtonProps) {
+export function Button({ title, onPress, variant = 'primary', icon, style, disabled = false }: ButtonProps) {
   const isPrimary = variant === 'primary';
   const isGhost = variant === 'ghost';
 
   return (
     <Pressable
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.base,
         isPrimary && styles.primary,
         variant === 'secondary' && styles.secondary,
         isGhost && styles.ghost,
-        pressed && styles.pressed,
+        pressed && !disabled && styles.pressed,
+        disabled && styles.disabled,
         style,
       ]}
     >
@@ -60,6 +63,9 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.78,
+  },
+  disabled: {
+    opacity: 0.46,
   },
   text: {
     fontSize: typography.body,
