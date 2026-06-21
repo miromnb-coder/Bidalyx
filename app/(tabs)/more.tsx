@@ -16,7 +16,7 @@ const items: { title: string; subtitle: string; icon: keyof typeof Ionicons.glyp
   { title: 'Viestipohjat', subtitle: 'Lähetys ja muistutukset', icon: 'chatbubble-ellipses-outline', route: '/templates/messages' },
   { title: 'Yrityksen tiedot', subtitle: 'Logo, Y-tunnus ja yhteystiedot', icon: 'business-outline', route: '/settings/company' },
   { title: 'Hinnasto', subtitle: 'Neliöhinnat, aloitusmaksu ja matkakulu', icon: 'pricetag-outline', route: '/settings/pricing' },
-  { title: 'SaaS-paketit', subtitle: 'Starter, Pro ja Business', icon: 'card-outline', route: '/subscriptions' },
+  { title: 'SaaS-paketit', subtitle: 'Starter, Pro ja Business', icon: 'card-outline', route: '/pricing' },
   { title: 'Onboarding', subtitle: 'Avaa käyttöönotto uudelleen', icon: 'rocket-outline', route: '/onboarding' },
 ];
 
