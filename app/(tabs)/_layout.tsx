@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { Platform, StyleSheet, View } from 'react-native';
 
-import { colors, radii, spacing } from '../../src/constants/theme';
+import { colors, radii, shadows, spacing } from '../../src/constants/theme';
 
 function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMap; color: string; focused: boolean }) {
   if (name === 'add') {
@@ -31,61 +31,32 @@ export default function TabsLayout() {
         tabBarStyle: styles.tabBar,
       }}
     >
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: 'Etusivu',
-          tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'home' : 'home-outline'} color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="quotes"
-        options={{
-          title: 'Tarjoukset',
-          tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'document-text' : 'document-text-outline'} color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="create"
-        options={{
-          title: '',
-          tabBarIcon: ({ color, focused }) => <TabIcon name="add" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="customers"
-        options={{
-          title: 'Asiakkaat',
-          tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'people' : 'people-outline'} color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="more"
-        options={{
-          title: 'Lisää',
-          tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'ellipsis-horizontal' : 'ellipsis-horizontal-outline'} color={color} focused={focused} />,
-        }}
-      />
+      <Tabs.Screen name="home" options={{ title: 'Etusivu', tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'home' : 'home-outline'} color={color} focused={focused} /> }} />
+      <Tabs.Screen name="quotes" options={{ title: 'Tarjoukset', tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'document-text' : 'document-text-outline'} color={color} focused={focused} /> }} />
+      <Tabs.Screen name="create" options={{ title: '', tabBarIcon: ({ color, focused }) => <TabIcon name="add" color={color} focused={focused} /> }} />
+      <Tabs.Screen name="customers" options={{ title: 'Asiakkaat', tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'people' : 'people-outline'} color={color} focused={focused} /> }} />
+      <Tabs.Screen name="more" options={{ title: 'Lisää', tabBarIcon: ({ color, focused }) => <TabIcon name={focused ? 'ellipsis-horizontal' : 'ellipsis-horizontal-outline'} color={color} focused={focused} /> }} />
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: Platform.select({ ios: 88, default: 74 }),
+    height: Platform.select({ ios: 88, default: 76 }),
     paddingTop: spacing.xs,
     paddingBottom: Platform.select({ ios: spacing.lg, default: spacing.sm }),
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: colors.borderSoft,
     backgroundColor: colors.card,
+    ...shadows.card,
   },
   label: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '900',
   },
   iconWrap: {
-    width: 34,
-    height: 28,
+    width: 36,
+    height: 30,
     borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
@@ -94,13 +65,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   plusButton: {
-    width: 58,
-    height: 58,
+    width: 60,
+    height: 60,
     marginTop: -spacing.lg,
     borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.black,
+    ...shadows.hero,
   },
   plusButtonActive: {
     transform: [{ scale: 1.05 }],
