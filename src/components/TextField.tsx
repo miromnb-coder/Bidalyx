@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: typography.small,
-    fontWeight: '900',
+    fontWeight: '800',
     color: colors.text,
   },
   input: {
     minHeight: layout.inputHeight,
-    borderRadius: radii.lg,
+    borderRadius: radii.md,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.card,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   multiline: {
-    minHeight: 132,
+    minHeight: 120,
     paddingTop: spacing.md,
     textAlignVertical: 'top',
   },
