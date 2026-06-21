@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -9,169 +8,40 @@ import { QuoteCard } from '../../src/components/QuoteCard';
 import { Screen } from '../../src/components/Screen';
 import { SectionTitle } from '../../src/components/SectionTitle';
 import { StatCard } from '../../src/components/StatCard';
-import { colors, radii, spacing, typography } from '../../src/constants/theme';
+import { colors, spacing, typography } from '../../src/constants/theme';
 import { useQuotes } from '../../src/state/QuoteContext';
 import { formatCurrency } from '../../src/utils/formatCurrency';
 
 export default function HomeScreen() {
-  const { quotes, dashboard } = useQuotes();
+  const { quotes, customers, dashboard, syncLoading, syncError, refreshRemote } = useQuotes();
+  const followUps = quotes.filter((quote) => ['sent', 'waiting', 'opened'].includes(quote.status));
+  const drafts = quotes.filter((quote) => quote.status === 'draft');
 
   return (
     <Screen>
-      <AppHeader title="Bidalyx" subtitle="Tarjoukset hallinnassa" rightIcon="notifications-outline" />
-
-      <Card style={styles.heroCard}>
-        <View style={styles.heroTopRow}>
-          <View>
-            <Text style={styles.heroLabel}>Avoimissa tarjouksissa</Text>
-            <Text style={styles.heroValue}>{formatCurrency(dashboard.openValue)}</Text>
-          </View>
-          <View style={styles.heroIcon}>
-            <Ionicons name="trending-up-outline" size={28} color={colors.blue} />
-          </View>
-        </View>
-        <View style={styles.heroDivider} />
-        <View style={styles.heroBottomRow}>
-          <View>
-            <Text style={styles.microLabel}>Tänään</Text>
-            <Text style={styles.microValue}>{dashboard.newCount} uutta pyyntöä</Text>
-          </View>
-          <View style={styles.liveBadge}>
-            <View style={styles.liveDot} />
-            <Text style={styles.liveText}>Live</Text>
-          </View>
-        </View>
-      </Card>
-
-      <View style={styles.statsRow}>
-        <StatCard value={formatCurrency(dashboard.acceptedThisMonth)} label="Hyväksytty tässä kuussa" icon="arrow-up-circle-outline" tone="green" />
-        <StatCard value={`${dashboard.winRate} %`} label="Voittoprosentti" icon="pie-chart-outline" tone="blue" />
-        <StatCard value={String(dashboard.acceptedCount)} label="Hyväksytty" icon="checkmark-circle-outline" tone="green" />
-      </View>
-
-      <Button title="Luo tarjous" icon="add" onPress={() => router.push('/(tabs)/create')} />
-
-      <View style={styles.aiCard}>
-        <View style={styles.aiIcon}>
-          <Ionicons name="sparkles-outline" size={20} color={colors.blue} />
-        </View>
-        <View style={styles.aiTextWrap}>
-          <Text style={styles.aiTitle}>AI auttaa tekemään tarjouksen nopeammin</Text>
-          <Text style={styles.aiText}>Lisää asiakkaan viesti ja työn tiedot. Bidalyx tekee siistin luonnoksen.</Text>
-        </View>
-      </View>
-
+      <AppHeader title="Bidalyx" subtitle="Myynnin työtila" rightIcon="notifications-outline" />
+      <Card style={styles.hero}><Text style={styles.label}>Avoin tarjousarvo</Text><Text style={styles.value}>{formatCurrency(dashboard.openValue)}</Text><Text style={styles.text}>{followUps.length} asiakasta odottaa vastausta · {syncLoading ? 'Synkronoidaan' : 'Synkronoitu'}</Text></Card>
+      {syncError ? <Card style={styles.errorCard}><Text style={styles.errorText}>{syncError}</Text></Card> : null}
+      <View style={styles.row}><StatCard value={formatCurrency(dashboard.acceptedThisMonth)} label="Hyväksytty" icon="checkmark-circle-outline" tone="green" /><StatCard value={`${dashboard.winRate} %`} label="Voitto" icon="pie-chart-outline" tone="blue" /><StatCard value={formatCurrency(dashboard.averageQuoteValue)} label="Keskihinta" icon="cash-outline" tone="orange" /></View>
+      <View style={styles.row}><StatCard value={String(followUps.length)} label="Muistuta" icon="notifications-outline" tone="orange" /><StatCard value={String(drafts.length)} label="Luonnokset" icon="document-outline" tone="blue" /><StatCard value={String(customers.length)} label="Asiakkaat" icon="people-outline" tone="green" /></View>
+      <View style={styles.row}><Button title="Luo tarjous" icon="add" style={styles.flex} onPress={() => router.push('/(tabs)/create')} /><Button title="Päivitä" variant="secondary" icon="refresh-outline" style={styles.flex} onPress={refreshRemote} /></View>
+      <Card style={styles.next}><Text style={styles.nextTitle}>Seuraava toimenpide</Text><Text style={styles.text}>{followUps.length ? 'Muistuta avoimia asiakkaita ja seuraa hyväksyntöjä.' : drafts.length ? 'Viimeistele luonnokset ja lähetä ne asiakkaille.' : 'Luo uusi tarjous ja aloita myyntiputki.'}</Text></Card>
+      {followUps.length ? <><SectionTitle title="Muistutettavat tarjoukset" action="" />{followUps.slice(0, 2).map((quote) => <QuoteCard key={quote.id} quote={quote} onPress={() => router.push(`/quote/${quote.id}`)} />)}</> : null}
       <SectionTitle title="Viimeaikaiset tarjouspyynnöt" action="Näytä kaikki" />
-      {quotes.slice(0, 3).map((quote) => (
-        <QuoteCard key={quote.id} quote={quote} onPress={() => router.push(`/quote/${quote.id}`)} />
-      ))}
+      {quotes.slice(0, 3).map((quote) => <QuoteCard key={quote.id} quote={quote} onPress={() => router.push(`/quote/${quote.id}`)} />)}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  heroCard: {
-    minHeight: 170,
-    padding: spacing.lg,
-    gap: spacing.md,
-  },
-  heroTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  heroLabel: {
-    fontSize: typography.body,
-    color: colors.mutedText,
-    fontWeight: '800',
-  },
-  heroValue: {
-    marginTop: spacing.xs,
-    fontSize: 40,
-    color: colors.text,
-    fontWeight: '900',
-    letterSpacing: -1.2,
-  },
-  heroIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: radii.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.blueSoft,
-  },
-  heroDivider: {
-    height: 1,
-    backgroundColor: colors.border,
-  },
-  heroBottomRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  microLabel: {
-    fontSize: typography.tiny,
-    color: colors.mutedText,
-    fontWeight: '800',
-  },
-  microValue: {
-    marginTop: 2,
-    fontSize: typography.body,
-    color: colors.text,
-    fontWeight: '900',
-  },
-  liveBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    borderRadius: radii.full,
-    backgroundColor: colors.greenSoft,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 7,
-  },
-  liveDot: {
-    width: 7,
-    height: 7,
-    borderRadius: radii.full,
-    backgroundColor: colors.green,
-  },
-  liveText: {
-    fontSize: typography.tiny,
-    color: colors.green,
-    fontWeight: '900',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  aiCard: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    padding: spacing.md,
-    borderRadius: radii.xl,
-    backgroundColor: colors.blueSoft,
-  },
-  aiIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: radii.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.card,
-  },
-  aiTextWrap: {
-    flex: 1,
-    gap: 2,
-  },
-  aiTitle: {
-    fontSize: typography.small,
-    color: colors.text,
-    fontWeight: '900',
-  },
-  aiText: {
-    fontSize: typography.small,
-    color: colors.mutedText,
-    lineHeight: 19,
-    fontWeight: '600',
-  },
+  flex: { flex: 1 },
+  hero: { padding: spacing.lg, gap: spacing.xs },
+  label: { fontSize: typography.small, color: colors.mutedText, fontWeight: '800' },
+  value: { fontSize: 40, color: colors.text, fontWeight: '900' },
+  text: { fontSize: typography.body, lineHeight: 22, color: colors.mutedText, fontWeight: '600' },
+  row: { flexDirection: 'row', gap: spacing.sm },
+  errorCard: { backgroundColor: colors.redSoft },
+  errorText: { color: colors.red, fontWeight: '800' },
+  next: { backgroundColor: colors.blueSoft },
+  nextTitle: { fontSize: typography.h3, color: colors.text, fontWeight: '900' },
 });
