@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: layout.screenPadding,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.xxl,
-    gap: spacing.md,
+    paddingTop: spacing.lg,
+    paddingBottom: 124,
+    gap: spacing.lg,
   },
 });
