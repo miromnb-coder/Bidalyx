@@ -23,15 +23,7 @@ export function Button({ title, onPress, variant = 'primary', icon, style, disab
     <Pressable
       disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.base,
-        isPrimary && styles.primary,
-        variant === 'secondary' && styles.secondary,
-        isGhost && styles.ghost,
-        pressed && !disabled && styles.pressed,
-        disabled && styles.disabled,
-        style,
-      ]}
+      style={({ pressed }) => [styles.base, isPrimary && styles.primary, variant === 'secondary' && styles.secondary, isGhost && styles.ghost, pressed && !disabled && styles.pressed, disabled && styles.disabled, style]}
     >
       {icon ? <Ionicons name={icon} size={18} color={iconColor} /> : null}
       <Text style={[styles.text, isPrimary && styles.primaryText, isGhost && styles.ghostText]}>{title}</Text>
@@ -49,36 +41,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.sm,
   },
-  primary: {
-    backgroundColor: colors.black,
-  },
-  secondary: {
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  ghost: {
-    minHeight: 48,
-    paddingHorizontal: spacing.sm,
-    backgroundColor: 'transparent',
-  },
-  pressed: {
-    transform: [{ scale: 0.985 }],
-    opacity: 0.86,
-  },
-  disabled: {
-    opacity: 0.44,
-  },
-  text: {
-    fontSize: typography.body,
-    fontWeight: '900',
-    color: colors.text,
-    letterSpacing: -0.1,
-  },
-  primaryText: {
-    color: colors.card,
-  },
-  ghostText: {
-    color: colors.blue,
-  },
+  primary: { backgroundColor: colors.black },
+  secondary: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
+  ghost: { minHeight: 44, paddingHorizontal: spacing.sm, backgroundColor: 'transparent' },
+  pressed: { transform: [{ scale: 0.98 }], opacity: 0.86 },
+  disabled: { opacity: 0.44 },
+  text: { fontSize: typography.body, fontWeight: '800', color: colors.text, letterSpacing: -0.1 },
+  primaryText: { color: colors.card },
+  ghostText: { color: colors.blue },
 });
