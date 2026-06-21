@@ -41,14 +41,14 @@ export default function CreateQuoteScreen() {
   return (
     <Screen>
       <View style={styles.headerRow}><Pressable onPress={() => router.back()} style={styles.iconButton}><Ionicons name="arrow-back" size={24} color={colors.text} /></Pressable><View style={styles.stepBadge}><Text style={styles.stepText}>1 / 3</Text></View></View>
-      <View><Text style={styles.title}>Luo uusi tarjous</Text><Text style={styles.subtitle}>Anna asiakkaan ja työn tiedot. Bidalyx muodostaa seuraavaksi laadukkaan tarjousluonnoksen.</Text></View>
-
+      <View><Text style={styles.title}>Luo uusi tarjous</Text><Text style={styles.subtitle}>Anna asiakkaan ja työn tiedot. Bidalyx muodostaa seuraavaksi tarjousluonnoksen.</Text></View>
       {showError ? <View style={styles.errorBox}><Ionicons name="alert-circle-outline" size={18} color={colors.orange} /><Text style={styles.errorText}>Lisää ainakin asiakkaan nimi ja lyhyt kuvaus työstä.</Text></View> : null}
 
       <Card style={styles.formCard}>
         <Text style={styles.sectionTitle}>Asiakas</Text>
         <TextField label="Asiakkaan nimi" placeholder="Esim. Matti Virtanen" value={customerName} onChangeText={setCustomerName} />
-        <View style={styles.twoColumnRow}><View style={styles.flexItem}><TextField label="Puhelin" placeholder="040 123 4567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" /></View><View style={styles.flexItem}><TextField label="Sähköposti" placeholder="asiakas@email.fi" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" /></View></View>
+        <TextField label="Puhelin" placeholder="040 123 4567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+        <TextField label="Sähköposti" placeholder="asiakas@email.fi" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
       </Card>
 
       <Card style={styles.formCard}>
@@ -60,10 +60,10 @@ export default function CreateQuoteScreen() {
       <Card style={styles.formCard}>
         <Text style={styles.sectionTitle}>Asiakkaan viesti</Text>
         <TextField label="Työn kuvaus" placeholder="Kuvaile työ tarkemmin ja asiakkaan toiveet..." value={message} onChangeText={setMessage} multiline />
-        <View style={styles.group}><Text style={styles.label}>Lisää kuvia <Text style={styles.optional}>(valinnainen)</Text></Text><View style={styles.uploadBox}><Ionicons name="images-outline" size={30} color={colors.blue} /><Text style={styles.uploadTitle}>Lisää kuvia tai vedä tänne</Text><Text style={styles.uploadText}>Kohdekuvat voi lisätä myös tarjousdetailissä</Text></View></View>
+        <View style={styles.group}><Text style={styles.label}>Lisää kuvia <Text style={styles.optional}>(valinnainen)</Text></Text><View style={styles.uploadBox}><Ionicons name="images-outline" size={28} color={colors.blue} /><Text style={styles.uploadTitle}>Lisää kuvia</Text><Text style={styles.uploadText}>Kuvat voi lisätä myös tarjousdetailissä</Text></View></View>
       </Card>
 
-      <Button title="Luo tarjous AI:lla" icon="sparkles-outline" onPress={handleCreateDraft} disabled={!canCreate} />
+      <Button title="Luo luonnos AI:lla" icon="sparkles-outline" onPress={handleCreateDraft} disabled={!canCreate} />
     </Screen>
   );
 }
@@ -71,27 +71,27 @@ export default function CreateQuoteScreen() {
 const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center', marginLeft: -spacing.sm },
-  stepBadge: { paddingHorizontal: spacing.sm, paddingVertical: 7, borderRadius: radii.full, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
-  stepText: { fontSize: typography.tiny, fontWeight: '900', color: colors.mutedText },
-  title: { fontSize: typography.h1, fontWeight: '900', color: colors.text, letterSpacing: -0.6 },
-  subtitle: { marginTop: spacing.xs, fontSize: typography.body, lineHeight: 22, color: colors.mutedText, fontWeight: '600' },
+  stepBadge: { minWidth: 58, height: 38, alignItems: 'center', justifyContent: 'center', borderRadius: radii.full, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
+  stepText: { fontSize: typography.small, fontWeight: '900', color: colors.mutedText },
+  title: { fontSize: typography.title, fontWeight: '900', color: colors.text, letterSpacing: -0.8 },
+  subtitle: { marginTop: spacing.xs, fontSize: typography.body, lineHeight: 23, color: colors.mutedText, fontWeight: '600' },
   errorBox: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.md, borderRadius: radii.lg, backgroundColor: colors.orangeSoft, borderWidth: 1, borderColor: '#FED7AA' },
   errorText: { flex: 1, fontSize: typography.small, fontWeight: '700', color: colors.text },
-  formCard: { gap: spacing.md },
-  sectionTitle: { fontSize: typography.h3, color: colors.text, fontWeight: '900' },
-  twoColumnRow: { flexDirection: 'row', gap: spacing.sm },
+  formCard: { gap: spacing.md, borderRadius: radii.xl },
+  sectionTitle: { fontSize: typography.h2, color: colors.text, fontWeight: '900' },
+  twoColumnRow: { flexDirection: 'row', gap: spacing.md },
   flexItem: { flex: 1 },
-  group: { gap: spacing.xs },
+  group: { gap: spacing.sm },
   label: { fontSize: typography.small, fontWeight: '900', color: colors.text },
   optional: { color: colors.mutedText },
   chipRow: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
-  chip: { minHeight: 44, paddingHorizontal: spacing.md, borderRadius: radii.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
+  chip: { minHeight: 44, paddingHorizontal: spacing.lg, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
   chipActive: { backgroundColor: colors.black, borderColor: colors.black },
-  chipText: { fontSize: typography.small, fontWeight: '900', color: colors.text },
+  chipText: { fontSize: typography.body, fontWeight: '800', color: colors.text },
   chipTextActive: { color: colors.card },
-  hintBox: { marginTop: spacing.xs, flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, padding: spacing.md, borderRadius: radii.lg, backgroundColor: colors.blueSoft },
+  hintBox: { marginTop: spacing.xs, flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, padding: spacing.md, borderRadius: radii.lg, backgroundColor: colors.blueSoft, borderWidth: 1, borderColor: '#DCE8FF' },
   hintText: { flex: 1, fontSize: typography.small, lineHeight: 19, color: colors.text, fontWeight: '700' },
-  uploadBox: { minHeight: 138, borderRadius: radii.lg, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.border, backgroundColor: colors.backgroundElevated, alignItems: 'center', justifyContent: 'center', gap: spacing.xs },
+  uploadBox: { minHeight: 124, borderRadius: radii.xl, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.border, backgroundColor: colors.backgroundElevated, alignItems: 'center', justifyContent: 'center', gap: spacing.xs },
   uploadTitle: { marginTop: spacing.xs, fontSize: typography.small, fontWeight: '900', color: colors.text },
   uploadText: { fontSize: typography.tiny, color: colors.mutedText, fontWeight: '700' },
 });
