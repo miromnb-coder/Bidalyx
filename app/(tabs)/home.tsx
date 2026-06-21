@@ -43,9 +43,9 @@ export default function HomeScreen() {
       <View style={styles.row}><StatCard value={formatCurrency(dashboard.acceptedThisMonth)} label="Hyväksytty" icon="checkmark-circle-outline" tone="green" /><StatCard value={`${dashboard.winRate} %`} label="Voitto" icon="pie-chart-outline" tone="blue" /><StatCard value={formatCurrency(dashboard.averageQuoteValue)} label="Keskihinta" icon="cash-outline" tone="orange" /></View>
       <View style={styles.row}><StatCard value={String(followUps.length)} label="Muistuta" icon="notifications-outline" tone="orange" /><StatCard value={String(drafts.length)} label="Luonnokset" icon="document-outline" tone="blue" /><StatCard value={String(customers.length)} label="Asiakkaat" icon="people-outline" tone="green" /></View>
       <View style={styles.row}><Button title="Luo tarjous" icon="add" style={styles.flex} onPress={() => router.push('/(tabs)/create')} /><Button title="Päivitä" variant="secondary" icon="refresh-outline" style={styles.flex} onPress={refreshRemote} /></View>
-      <View style={styles.row}><Button title="Ilmoitukset" variant="secondary" icon="notifications-outline" style={styles.flex} onPress={() => router.push('/notifications')} /><Button title="Paketit" variant="secondary" icon="card-outline" style={styles.flex} onPress={() => router.push('/subscriptions')} /></View>
+      <View style={styles.row}><Button title="Ilmoitukset" variant="secondary" icon="notifications-outline" style={styles.flex} onPress={() => router.push('/notifications')} /><Button title="Paketit" variant="secondary" icon="card-outline" style={styles.flex} onPress={() => router.push('/pricing')} /></View>
 
-      <Card style={styles.next}><View style={styles.nextIcon}><Ionicons name="flash-outline" size={20} color={colors.blue} /></View><View style={styles.flex}><Text style={styles.nextTitle}>Seuraava toimenpide</Text><Text style={styles.text}>{followUps.length ? 'Muistuta avoimia asiakkaita ja seuraa hyväksyntöjä.' : drafts.length ? 'Viimeistele luonnokset ja lähetä ne asiakkaille.' : 'Luo uusi tarjous ja aloita myyntiputki.'}</Text></View></Card>
+      <Card style={styles.next}><View style={styles.nextIcon}><Ionicons name="flash-outline" size={18} color={colors.blue} /></View><View style={styles.flex}><Text style={styles.nextTitle}>Seuraava toimenpide</Text><Text style={styles.text}>{followUps.length ? 'Muistuta avoimia asiakkaita ja seuraa hyväksyntöjä.' : drafts.length ? 'Viimeistele luonnokset ja lähetä ne asiakkaille.' : 'Luo uusi tarjous ja aloita myyntiputki.'}</Text></View></Card>
 
       {followUps.length ? <><SectionTitle title="Muistutettavat tarjoukset" action="" />{followUps.slice(0, 2).map((quote) => <QuoteCard key={quote.id} quote={quote} onPress={() => router.push(`/quote/${quote.id}`)} />)}</> : null}
       <SectionTitle title="Viimeaikaiset tarjouspyynnöt" action="Näytä kaikki" />
@@ -56,23 +56,23 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  hero: { padding: spacing.xl, gap: spacing.md, borderRadius: radii.xxl, ...shadows.hero },
+  hero: { padding: spacing.xl, gap: spacing.md, borderRadius: radii.xxl, minHeight: 184, ...shadows.hero },
   heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.md },
-  heroIcon: { width: 60, height: 60, borderRadius: radii.full, backgroundColor: colors.blueSoft, alignItems: 'center', justifyContent: 'center' },
-  label: { fontSize: typography.small, color: colors.mutedText, fontWeight: '900' },
-  value: { marginTop: spacing.xs, fontSize: 42, color: colors.text, fontWeight: '900', letterSpacing: -1.2 },
-  text: { fontSize: typography.body, lineHeight: 22, color: colors.mutedText, fontWeight: '600' },
+  heroIcon: { width: 56, height: 56, borderRadius: radii.full, backgroundColor: colors.blueSoft, alignItems: 'center', justifyContent: 'center' },
+  label: { fontSize: typography.small, color: colors.mutedText, fontWeight: '800' },
+  value: { marginTop: spacing.xs, fontSize: 40, color: colors.text, fontWeight: '900', letterSpacing: -1.2 },
+  text: { fontSize: typography.small, lineHeight: 20, color: colors.mutedText, fontWeight: '600' },
   divider: { height: 1, backgroundColor: colors.borderSoft },
   heroBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   microLabel: { fontSize: typography.tiny, color: colors.subtleText, fontWeight: '900', textTransform: 'uppercase' },
-  microValue: { marginTop: 3, fontSize: typography.body, color: colors.text, fontWeight: '900' },
-  livePill: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.greenSoft, paddingHorizontal: spacing.sm, paddingVertical: 7, borderRadius: radii.full },
-  liveDot: { width: 7, height: 7, borderRadius: radii.full, backgroundColor: colors.green },
-  liveText: { fontSize: typography.tiny, color: colors.green, fontWeight: '900' },
-  row: { flexDirection: 'row', gap: spacing.sm },
+  microValue: { marginTop: 2, fontSize: typography.body, color: colors.text, fontWeight: '800' },
+  livePill: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.greenSoft, paddingHorizontal: spacing.md, paddingVertical: 7, borderRadius: radii.full },
+  liveDot: { width: 8, height: 8, borderRadius: radii.full, backgroundColor: colors.green },
+  liveText: { fontSize: typography.small, color: colors.green, fontWeight: '800' },
+  row: { flexDirection: 'row', gap: spacing.md },
   errorCard: { backgroundColor: colors.redSoft },
   errorText: { color: colors.red, fontWeight: '800' },
-  next: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start', backgroundColor: colors.blueSoft },
-  nextIcon: { width: 42, height: 42, borderRadius: radii.full, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
-  nextTitle: { fontSize: typography.h3, color: colors.text, fontWeight: '900' },
+  next: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start', backgroundColor: colors.blueSoft, borderColor: '#DCE8FF' },
+  nextIcon: { width: 38, height: 38, borderRadius: radii.full, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
+  nextTitle: { fontSize: typography.body, color: colors.text, fontWeight: '900' },
 });
