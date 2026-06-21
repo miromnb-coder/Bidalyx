@@ -27,6 +27,7 @@ export default function RootLayout() {
             <Stack.Screen name="quote/accepted" />
             <Stack.Screen name="quote/share" />
             <Stack.Screen name="quote/send" />
+            <Stack.Screen name="quote-doc" />
             <Stack.Screen name="customer/[id]" />
             <Stack.Screen name="settings/company" />
             <Stack.Screen name="settings/pricing" />
