@@ -1,6 +1,6 @@
 import { Text, TextInput, TextInputProps, StyleSheet, View } from 'react-native';
 
-import { colors, radii, spacing, typography } from '../constants/theme';
+import { colors, layout, radii, spacing, typography } from '../constants/theme';
 
 type TextFieldProps = TextInputProps & {
   label: string;
@@ -26,21 +26,22 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: typography.small,
-    fontWeight: '800',
+    fontWeight: '900',
     color: colors.text,
   },
   input: {
-    minHeight: 52,
-    borderRadius: radii.md,
+    minHeight: layout.inputHeight,
+    borderRadius: radii.lg,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.card,
     paddingHorizontal: spacing.md,
     fontSize: typography.body,
     color: colors.text,
+    fontWeight: '600',
   },
   multiline: {
-    minHeight: 128,
+    minHeight: 132,
     paddingTop: spacing.md,
     textAlignVertical: 'top',
   },
