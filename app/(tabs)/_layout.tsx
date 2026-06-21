@@ -8,14 +8,14 @@ function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMa
   if (name === 'add') {
     return (
       <View style={[styles.plusButton, focused && styles.plusButtonActive]}>
-        <Ionicons name="add" size={31} color={colors.card} />
+        <Ionicons name="add" size={30} color={colors.card} />
       </View>
     );
   }
 
   return (
     <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-      <Ionicons name={name} size={21} color={color} />
+      <Ionicons name={name} size={22} color={color} />
     </View>
   );
 }
@@ -42,39 +42,39 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: Platform.select({ ios: 88, default: 76 }),
+    height: Platform.select({ ios: 86, default: 74 }),
     paddingTop: spacing.xs,
     paddingBottom: Platform.select({ ios: spacing.lg, default: spacing.sm }),
     borderTopWidth: 1,
     borderTopColor: colors.borderSoft,
-    backgroundColor: colors.card,
+    backgroundColor: 'rgba(255,255,255,0.96)',
     ...shadows.card,
   },
   label: {
     fontSize: 11,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   iconWrap: {
-    width: 36,
-    height: 30,
+    width: 40,
+    height: 34,
     borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconWrapActive: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.backgroundElevated,
   },
   plusButton: {
-    width: 60,
-    height: 60,
-    marginTop: -spacing.lg,
+    width: 62,
+    height: 62,
+    marginTop: -22,
     borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.black,
-    ...shadows.hero,
+    ...shadows.fab,
   },
   plusButtonActive: {
-    transform: [{ scale: 1.05 }],
+    transform: [{ scale: 1.03 }],
   },
 });
