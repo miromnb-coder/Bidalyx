@@ -12,11 +12,11 @@ type AppHeaderProps = {
 export function AppHeader({ title, subtitle, rightIcon }: AppHeaderProps) {
   return (
     <View style={styles.row}>
-      <View>
+      <View style={styles.textWrap}>
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
-      {rightIcon ? <Ionicons name={rightIcon} size={23} color={colors.text} /> : null}
+      {rightIcon ? <Ionicons name={rightIcon} size={24} color={colors.text} /> : null}
     </View>
   );
 }
@@ -26,17 +26,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
+  },
+  textWrap: {
+    flex: 1,
+    paddingRight: spacing.md,
   },
   title: {
-    fontSize: typography.h1,
+    fontSize: typography.title,
+    lineHeight: 38,
     fontWeight: '900',
-    letterSpacing: -0.8,
+    letterSpacing: -0.9,
     color: colors.text,
   },
   subtitle: {
     marginTop: 2,
     fontSize: typography.body,
+    lineHeight: 22,
     fontWeight: '600',
     color: colors.mutedText,
   },
