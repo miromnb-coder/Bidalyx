@@ -20,8 +20,10 @@ export function StatCard({ value, label, icon, tone = 'blue' }: StatCardProps) {
       <View style={[styles.iconWrap, { backgroundColor: soft }]}>
         <Ionicons name={icon} size={18} color={accent} />
       </View>
-      <Text style={styles.value}>{value}</Text>
-      <Text style={styles.label}>{label}</Text>
+      <View>
+        <Text style={styles.value} numberOfLines={1}>{value}</Text>
+        <Text style={styles.label}>{label}</Text>
+      </View>
     </Card>
   );
 }
@@ -29,26 +31,30 @@ export function StatCard({ value, label, icon, tone = 'blue' }: StatCardProps) {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    minHeight: 118,
+    minHeight: 104,
     justifyContent: 'space-between',
+    padding: spacing.md,
+    borderRadius: radii.lg,
   },
   iconWrap: {
-    width: 30,
-    height: 30,
+    width: 32,
+    height: 32,
     borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-end',
   },
   value: {
-    fontSize: typography.h2,
+    fontSize: typography.h3,
     fontWeight: '900',
     color: colors.text,
+    letterSpacing: -0.4,
   },
   label: {
+    marginTop: 2,
     fontSize: typography.tiny,
     lineHeight: 15,
     color: colors.mutedText,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });
