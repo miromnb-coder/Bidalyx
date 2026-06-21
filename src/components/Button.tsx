@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
 
-import { colors, radii, spacing, typography } from '../constants/theme';
+import { colors, layout, radii, spacing, typography } from '../constants/theme';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
@@ -17,6 +17,7 @@ type ButtonProps = {
 export function Button({ title, onPress, variant = 'primary', icon, style, disabled = false }: ButtonProps) {
   const isPrimary = variant === 'primary';
   const isGhost = variant === 'ghost';
+  const iconColor = isPrimary ? colors.card : isGhost ? colors.blue : colors.text;
 
   return (
     <Pressable
@@ -32,7 +33,7 @@ export function Button({ title, onPress, variant = 'primary', icon, style, disab
         style,
       ]}
     >
-      {icon ? <Ionicons name={icon} size={18} color={isPrimary ? colors.card : colors.text} /> : null}
+      {icon ? <Ionicons name={icon} size={18} color={iconColor} /> : null}
       <Text style={[styles.text, isPrimary && styles.primaryText, isGhost && styles.ghostText]}>{title}</Text>
     </Pressable>
   );
@@ -40,7 +41,7 @@ export function Button({ title, onPress, variant = 'primary', icon, style, disab
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 54,
+    minHeight: layout.buttonHeight,
     paddingHorizontal: spacing.lg,
     borderRadius: radii.lg,
     alignItems: 'center',
@@ -57,20 +58,22 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   ghost: {
-    minHeight: 44,
+    minHeight: 48,
     paddingHorizontal: spacing.sm,
     backgroundColor: 'transparent',
   },
   pressed: {
-    opacity: 0.78,
+    transform: [{ scale: 0.985 }],
+    opacity: 0.86,
   },
   disabled: {
-    opacity: 0.46,
+    opacity: 0.44,
   },
   text: {
     fontSize: typography.body,
-    fontWeight: '800',
+    fontWeight: '900',
     color: colors.text,
+    letterSpacing: -0.1,
   },
   primaryText: {
     color: colors.card,
