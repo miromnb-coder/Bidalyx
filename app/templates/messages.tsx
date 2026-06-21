@@ -13,6 +13,7 @@ import { useAuth } from '../../src/state/AuthContext';
 import { useQuotes } from '../../src/state/QuoteContext';
 
 const defaultTypes = ['quote_sent', 'reminder', 'expiring', 'accepted', 'question'];
+const linkPlaceholder = '{{link}}';
 
 export default function MessageTemplatesScreen() {
   const { company } = useAuth();
@@ -64,7 +65,7 @@ export default function MessageTemplatesScreen() {
     <Screen>
       <Pressable onPress={() => router.back()} style={styles.backButton}><Ionicons name="arrow-back" size={24} color={colors.text} /></Pressable>
       <Text style={styles.title}>Viestipohjat</Text>
-      <Text style={styles.subtitle}>Muokkaa lähetys-, muistutus- ja hyväksyntäviestejä. Käytä muuttujaa {{'{{link}}'}} tarjouslinkin kohdalla.</Text>
+      <Text style={styles.subtitle}>Muokkaa lähetys-, muistutus- ja hyväksyntäviestejä. Käytä muuttujaa {linkPlaceholder} tarjouslinkin kohdalla.</Text>
 
       <Card style={styles.editorCard}>
         <Text style={styles.cardTitle}>{editingId ? 'Muokkaa viestipohjaa' : 'Uusi viestipohja'}</Text>
