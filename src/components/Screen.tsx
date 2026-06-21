@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { ScrollView, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors, spacing } from '../constants/theme';
+import { colors, layout, spacing } from '../constants/theme';
 
 type ScreenProps = PropsWithChildren<{
   scroll?: boolean;
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: layout.screenPadding,
     paddingTop: spacing.md,
     paddingBottom: spacing.xxl,
     gap: spacing.md,
